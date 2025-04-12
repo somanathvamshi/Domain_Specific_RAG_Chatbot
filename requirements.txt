@@ -1,8 +1,0 @@
-boto3
-langchain
-langchain-community
-langchain-aws
-faiss-cpu
-pypdf
-streamlit
-unstructured[all-docs] >= 0.6.8
