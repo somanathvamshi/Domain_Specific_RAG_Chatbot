@@ -1,4 +1,4 @@
-# 🧠 Chat With PDF - Domain-Specific RAG Chatbot
+# 🧠 Domain-Specific RAG Chatbot
 
 A Generative AI-powered application that allows users to chat with the contents of PDF documents using **Amazon Bedrock**, **Langchain**, **Python**, **Docker**, and **Amazon S3**. This project applies the Retrieval-Augmented Generation (RAG) technique to ground responses from an LLM in document-specific context.
 
