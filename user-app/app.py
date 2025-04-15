@@ -76,32 +76,78 @@ def get_response(llm,vectorstore, question ):
 
 ## main method
 def main():
-    st.header("This is Client Site for Chat with PDF demo using Bedrock, RAG etc")
+    st.set_page_config(page_title="Chat with Knowledgebase", layout="wide")
 
-    load_index()
-
-    dir_list = os.listdir(folder_path)
-    st.write(f"Files and Directories in {folder_path}")
-    st.write(dir_list)
-
-    ## create index
-    faiss_index = FAISS.load_local(
-        index_name="my_faiss",
-        folder_path = folder_path,
-        embeddings=bedrock_embeddings,
-        allow_dangerous_deserialization=True
+    # 🌌 Background image
+    st.markdown(
+        """
+        <style>
+        .stApp {
+            background: url("https://images.pexels.com/photos/3214110/pexels-photo-3214110.jpeg");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        .stApp > div:first-child {
+            background-color: rgba(255, 255, 255, 0.92);
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        #MainMenu, footer {visibility: hidden;}
+        </style>
+        """,
+        unsafe_allow_html=True
     )
 
-    st.write("INDEX IS READY")
-    question = st.text_input("Please ask your question")
-    if st.button("Ask Question"):
-        with st.spinner("Querying..."):
+    st.title("🤖 Chat with Knowledgebase")
 
-            llm = get_llm()
+    # 🧠 Initialize chat history
+    if "history" not in st.session_state:
+        st.session_state.history = []
 
-            # get_response
-            st.write(get_response(llm, faiss_index, question))
-            st.success("Done")
+    # Load index on first run
+    if "index_loaded" not in st.session_state:
+        with st.spinner("📦 Loading index..."):
+            load_index()
+            st.session_state.faiss_index = FAISS.load_local(
+                index_name="my_faiss",
+                folder_path=folder_path,
+                embeddings=bedrock_embeddings,
+                allow_dangerous_deserialization=True
+            )
+            st.success("📚 Index is ready!")
+            st.session_state.index_loaded = True
+
+    st.markdown("Ask any question based on your uploaded PDFs, Excels, or CSVs:")
+
+    question = st.text_input("🔍 Your question", key="user_input")
+
+    if st.button("Get Answer"):
+        if not question.strip():
+            st.warning("Please enter a valid question.")
+        else:
+            with st.spinner("💬 Thinking..."):
+                try:
+                    llm = get_llm()
+                    answer = get_response(llm, st.session_state.faiss_index, question)
+                    st.session_state.history.append((question, answer))
+                except Exception as e:
+                    st.error(f"An error occurred: {e}")
+
+    # 📜 Chat history
+    if st.session_state.history:
+        st.markdown("### 🕘 Chat History")
+        for i, (q, a) in enumerate(reversed(st.session_state.history), 1):
+            with st.expander(f"Q{i}: {q}", expanded=False):
+                st.markdown(f"**Answer:** {a}")
+
+    # 🧼 Optional: Clear chat history button
+    if st.button("🗑️ Clear History"):
+        st.session_state.history = []
+        st.experimental_rerun()
+
 
 if __name__ == "__main__":
     main()
