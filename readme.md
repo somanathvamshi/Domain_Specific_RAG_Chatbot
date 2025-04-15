@@ -25,6 +25,9 @@ A Generative AI-powered application that allows users to chat with the contents 
 
 ---
 
+## Architecture
+![Architecture](Screenshots/Architecture.png)
+
 ## Project Components
 
 This project has two independent applications:
@@ -53,7 +56,11 @@ docker run \
   -p 8083:8083 \
   -it pdf-reader-admin
 ```
-
+![Image1](Screenshots/Image1.png)
+![Image2](Screenshots/Image2.png)
+![Image3](Screenshots/Image3.png)
+![Image4](Screenshots/Image4.png)
+![Image5](Screenshots/Image5.png)
 ---
 
 ### 2️⃣ User Application
@@ -82,6 +89,7 @@ docker run \
   -p 8084:8084 \
   -it pdf-reader-client
 ```
+![Image6](Screenshots/Image6.png)
 
 ---
 
